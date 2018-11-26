@@ -1,0 +1,10 @@
+name = "LegendDataTypes"
+uuid = "99e09c13-5545-5ee2-bfa2-77f358fb75d8"
+
+[deps]
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
