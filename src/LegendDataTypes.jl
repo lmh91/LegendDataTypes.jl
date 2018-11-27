@@ -4,6 +4,21 @@ __precompile__(true)
 
 module LegendDataTypes
 
-# package code goes here
+using ArraysOfArrays
+using ElasticArrays
+using RadiationDetectorSignals
+using RadiationSpectra
+using RecipesBase
+using StaticArrays
+using StatsBase
+using UnsafeArrays
+using Unitful
+
+import Tables
+import TypedTables
+import Colors
+
+include("abstract_io.jl")
+include("output_generation.jl")
 
 end # module
