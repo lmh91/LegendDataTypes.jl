@@ -108,9 +108,13 @@ function units_from_string(s::AbstractString)
         NoUnits
     else
         try
-            Unitful.replace_value(Meta.parse(s))
+            Unitful.replace_value(Unitful, Meta.parse(s))
         catch e
-            rethrow(ArgumentError("Unknown physical unit \"$s\""))
+            if e isa ErrorException
+                rethrow(ArgumentError("Unknown physical unit \"$s\""))
+            else
+                rethrow(e)
+            end
         end
     end
 end
