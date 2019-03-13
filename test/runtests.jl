@@ -3,6 +3,6 @@
 import Test
 Test.@testset "Package LegendDataTypes" begin
 
-# test code goes here
+include("test_radware_sigcompress.jl")
 
 end # testset

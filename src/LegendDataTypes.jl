@@ -20,5 +20,6 @@ import Colors
 
 include("abstract_io.jl")
 include("output_generation.jl")
+include("radware_sigcompress.jl")
 
 end # module
