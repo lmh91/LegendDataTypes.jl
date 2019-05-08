@@ -18,6 +18,7 @@ import Tables
 import TypedTables
 import Colors
 
+include("daq.jl")
 include("abstract_io.jl")
 include("output_generation.jl")
 include("radware_sigcompress.jl")
