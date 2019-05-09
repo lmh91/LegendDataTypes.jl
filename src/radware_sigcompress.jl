@@ -219,21 +219,37 @@ function _radware_sigcompress_decode_impl!(sig_out::AbstractVector{Int16}, sig_i
 end
 
 
-function radware_sigcompress_encode(input::AbstractVector{<:Integer})
-    input_conv = convert(Vector{Int16}, input)
-    output = similar(input_conv, UInt16)
-    _radware_sigcompress_encode_impl!(output, input_conv)
 
-    reinterpret(UInt8, hton.(output))
+
+"""
+    RadwareSigcompress <: AbstractArrayCodec
+"""
+struct RadwareSigcompress <: AbstractArrayCodec
+    shift::Int
+end
+export RadwareSigcompress
+
+RadwareSigcompress(::Type{T}) where {T<:Signed} = RadwareSigcompress(0)
+RadwareSigcompress(::Type{T}) where {T<:Unsigned} = RadwareSigcompress(typemin(typeof(signed(zero(T)))))
+
+
+function EncodedArrays.encode_data!(encoded::AbstractVector{UInt8}, codec::RadwareSigcompress, data::AbstractVector{T}) where {T}
+    shift = convert(T, codec.shift)
+    data_conv = Int16.(data .+ shift)
+    output = similar(data_conv, UInt16)
+    _radware_sigcompress_encode_impl!(output, data_conv)
+    resize!(encoded, 0)
+    append!(encoded, reinterpret(UInt8, hton.(output)))
+    encoded
 end
 
-export radware_sigcompress_encode
 
+function EncodedArrays.decode_data!(data::AbstractVector{T}, codec::RadwareSigcompress, encoded::AbstractVector{UInt8}) where {T}
+    encoded_conv = ntoh.(reinterpret(UInt16, encoded))
+    output = similar(encoded_conv, Int16)
+    tmp_data = _radware_sigcompress_decode_impl!(output, encoded_conv)
+    copyto!(data, tmp_data)
+    data .-= convert(T, codec.shift)
 
-function radware_sigcompress_decode(input::AbstractVector{UInt8})
-    input_conv = ntoh.(reinterpret(UInt16, input))
-    output = similar(input_conv, Int16)
-    _radware_sigcompress_decode_impl!(output, input_conv)
+    data
 end
-
-export radware_sigcompress_decode

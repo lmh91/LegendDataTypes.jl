@@ -6,11 +6,13 @@ module LegendDataTypes
 
 using ArraysOfArrays
 using ElasticArrays
+using EncodedArrays
 using RadiationDetectorSignals
 using RadiationSpectra
 using RecipesBase
 using StaticArrays
 using StatsBase
+using StructArrays
 using UnsafeArrays
 using Unitful
 
