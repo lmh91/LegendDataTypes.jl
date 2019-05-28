@@ -161,7 +161,7 @@ function _radware_sigcompress_decode_impl!(sig_out::AbstractVector{Int16}, sig_i
 
     #printf("<<< siglen = %d\n", siglen);
     fill!(sig_out, 0)
-    while (isi <= sig_len_in && iso < siglen)
+    while (isi <= sig_len_in && iso <= siglen)
         if (bp > 0) @_pincr(isi) end
         bp = 0              # bit pointer
         nw = sig_in[@_pincr(isi)]  # number of samples encoded in this chunk
@@ -175,7 +175,9 @@ function _radware_sigcompress_decode_impl!(sig_out::AbstractVector{Int16}, sig_i
                 if (bp+nb > 15)
                     bp -= 16
                     db[2] = sig_in[@_pincr(isi)]
-                    db[1] = sig_in[isi]
+                    if isi <= lastindex(sig_in)
+                        db[1] = sig_in[isi]
+                    end
                     dd[1] = dd[1] << (bp+nb)
                 else
                     dd[1] = dd[1] << nb
@@ -189,15 +191,17 @@ function _radware_sigcompress_decode_impl!(sig_out::AbstractVector{Int16}, sig_i
             #=  -----  decode derivative / difference values  -----  =#
             sig_out[@_pincr(iso)] = sig_in[@_pincr(isi)] % Int16  # starting signal value
             min = sig_in[@_pincr(isi)] % Int16    # min value used for encoding
-            db[1] = sig_in[isi]
+            if isi <= lastindex(sig_in)
+                db[1] = sig_in[isi]
+            end
             i = 1; while (i < nw && iso <= siglen)
                 if (bp+nb > 15)
                     bp -= 16
                     db[2] = sig_in[@_pincr(isi)]
-                    if iso < siglen
+                    if isi <= lastindex(sig_in)
                         db[1] = sig_in[isi]
-                        dd[1] = dd[1] << (bp+nb)
                     end
+                    dd[1] = dd[1] << (bp+nb)
                 else
                     dd[1] = dd[1] << nb
                 end
