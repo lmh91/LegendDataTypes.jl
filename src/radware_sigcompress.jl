@@ -59,7 +59,7 @@ function _radware_sigcompress_encode_impl!(sig_out::AbstractVector{UInt16}, sig_
         i=j+1; while (i <= sig_len_in && i < j+48)  # FIXME; # 48 could be tuned better?
             if (max1 < sig_in[i]) max1 = sig_in[i] end
             if (min1 > sig_in[i]) min1 = sig_in[i] end
-            ds = sig_in[i] - sig_in[i-1]
+            ds = Int32(sig_in[i]) - Int32(sig_in[i-1])
             if (max2 < ds) max2 = ds end
             if (min2 > ds) min2 = ds end
             @_pincr(nw)
@@ -83,7 +83,7 @@ function _radware_sigcompress_encode_impl!(sig_out::AbstractVector{UInt16}, sig_
             while (max2 - min2 > mask[nb2]) @_pincr(nb2) end
             #for (; i <= sig_len_in && i < j+len[nb1]; @_pincr(i)) {
             while (i <= sig_len_in && i < j+128)  # FIXME; # 128 could be tuned better?
-                ds = sig_in[i] - sig_in[i-1]
+                ds = Int32(sig_in[i]) - Int32(sig_in[i-1])
                 if (max2 < ds) max2 = ds end
                 dd2 = max2 - min2
                 if (min2 > ds) dd2 = max2 - ds end
@@ -121,7 +121,7 @@ function _radware_sigcompress_encode_impl!(sig_out::AbstractVector{UInt16}, sig_
             sig_out[@_pincr(iso)] = min2 % UInt16       # min value used for encoding
             i = iso; while (i <= iso + div(nw*nb2, 16)) sig_out[i] = 0; @_pincr(i) end
             i = j+1; while (i < j + nw)
-                dd[1] = sig_in[i] - sig_in[i-1] - min2     # value to encode
+                dd[1] = Int32(sig_in[i]) - Int32(sig_in[i-1]) - min2     # value to encode
                 dd[1] = dd[1] << (32 - bp - nb2)
                 sig_out[iso] |= db[2]
                 bp += nb2
@@ -146,7 +146,7 @@ end #= compress_signal =#
 function _radware_sigcompress_decode_impl!(sig_out::AbstractVector{Int16}, sig_in::AbstractVector{UInt16})
     sig_len_in = length(eachindex(sig_in))
 
-    i::Int = 0; j::Int = 0; min::Int = 0; nb::Int = 0; isi::Int = 0; iso::Int = 0; nw::Int = 0; bp::Int = 0; siglen::Int = 0
+    i::Int32 = 0; j::Int32 = 0; min::Int32 = 0; nb::Int32 = 0; isi::Int32 = 0; iso::Int32 = 0; nw::Int32 = 0; bp::Int32 = 0; siglen::Int32 = 0
     db = UInt16[0, 0]
     dd = reinterpret(UInt32, db)
     mask = UInt16[1, 3, 7,15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, 65535]
@@ -205,7 +205,7 @@ function _radware_sigcompress_decode_impl!(sig_out::AbstractVector{Int16}, sig_i
                 else
                     dd[1] = dd[1] << nb
                 end
-                sig_out[iso] = (db[2] & mask[nb]) + min + sig_out[iso-1]; @_pincr(iso)
+                sig_out[iso] = ((db[2] & mask[nb]) + min + sig_out[iso-1]) % Int16; @_pincr(iso)
                 bp += nb
                 @_pincr(i)
             end
