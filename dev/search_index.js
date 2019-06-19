@@ -49,6 +49,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api/#LegendDataTypes.RadwareSigcompress",
+    "page": "API",
+    "title": "LegendDataTypes.RadwareSigcompress",
+    "category": "type",
+    "text": "RadwareSigcompress <: AbstractArrayCodec\n\n\n\n\n\n"
+},
+
+{
     "location": "api/#Base.getindex-Tuple{AbstractLegendInput,AbstractString,Vararg{Any,N} where N}",
     "page": "API",
     "title": "Base.getindex",
@@ -73,6 +81,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "api/#LegendDataTypes.read_from_properties",
+    "page": "API",
+    "title": "LegendDataTypes.read_from_properties",
+    "category": "function",
+    "text": "read_from_properties(read_property::Function, src::Any, ::Type{T}) where {T<:AbstractArrayCodec}\n\nCreate a array codec of type T from properties of src, using the src-specific function read_property(src, name::Symbol, default_value) to read each property required.\n\nReturns an value of type T.\n\n\n\n\n\n"
+},
+
+{
     "location": "api/#LegendDataTypes.readdata",
     "page": "API",
     "title": "LegendDataTypes.readdata",
@@ -86,6 +102,14 @@ var documenterSearchIndex = {"docs": [
     "title": "LegendDataTypes.setunits!",
     "category": "function",
     "text": "setunits!(x)\n\nSet the units of x.\n\nLEGEND I/O packages will need to add methods for the I/O-object types they handle.\n\n\n\n\n\n"
+},
+
+{
+    "location": "api/#LegendDataTypes.to_properties",
+    "page": "API",
+    "title": "LegendDataTypes.to_properties",
+    "category": "function",
+    "text": "write_to_properties!(write_property!::Function, dest::Any, codec::AbstractArrayCodec)\n\nWrite all information required to re-create codec to dest using thes dest-specific function write_property!(dest, name::Symbol, x).\n\nTypically returns nothing.\n\n\n\n\n\n"
 },
 
 {
